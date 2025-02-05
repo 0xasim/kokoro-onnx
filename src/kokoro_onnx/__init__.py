@@ -32,9 +32,11 @@ class Kokoro:
         espeak_config: EspeakConfig | None = None,
     ):
         # Show useful information for bug reports
+        '''
         log.debug(
             f"koko-onnx version {importlib.metadata.version('kokoro-onnx')} on {platform.platform()} {platform.version()}"
         )
+        '''
         self.config = KoKoroConfig(model_path, voices_path, espeak_config)
         self.config.validate()
 
@@ -99,7 +101,7 @@ class Kokoro:
         create_duration = time.time() - start_t
         speedup_factor = audio_duration / create_duration
         log.debug(
-            f"Created audio in length of {audio_duration:.2f}s for {len(phonemes)} phonemes in {create_duration:.2f}s (More than {speedup_factor:.2f}x real-time)"
+            f"Created audio in length of \033[96m{audio_duration:.2f}s\033[0m for {len(phonemes)} phonemes in \033[33m{create_duration:.2f}s\033[0m (More than \033[91m{speedup_factor:.2f}\033[0mx real-time)"
         )
         return audio, SAMPLE_RATE
 
@@ -179,7 +181,8 @@ class Kokoro:
                 audio_part, _ = librosa.effects.trim(audio_part)
             audio.append(audio_part)
         audio = np.concatenate(audio)
-        log.debug(f"Created audio in {time.time() - start_t:.2f}s")
+        # print duration value in green
+        log.debug(f"Created audio in \033[92m{time.time() - start_t:.2f}s\033[0m")
         return audio, SAMPLE_RATE
 
     async def create_stream(
